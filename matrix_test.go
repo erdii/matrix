@@ -122,3 +122,23 @@ func TestSeq_UnexportedField(t *testing.T) {
 
 	tm.AssertExpectations(t)
 }
+
+func TestNilPointers(t *testing.T) {
+	t.Parallel()
+
+	type tcase struct {
+		Y *int
+	}
+
+	expected := []tcase{
+		{Y: nil},
+		{Y: ptrTo(1)},
+	}
+	generated := slices.Collect(Generate(t, tcase{},
+		[]*int{nil, ptrTo(1)}))
+
+	if !reflect.DeepEqual(expected, generated) {
+		t.Logf("Expected: %v, got: %v", expected, generated)
+		t.Fail()
+	}
+}
