@@ -107,7 +107,7 @@ func (g *generator[T]) elem() T {
 		ftype := field.Type()
 		val := g.dims[i][g.n[i]]
 
-		if ftype.Kind() == reflect.Pointer {
+		if ftype.Kind() == reflect.Pointer && !val.IsNil() {
 			ptr := reflect.New(val.Type().Elem())
 			ptr.Elem().Set(val.Elem())
 			field.Set(ptr)
