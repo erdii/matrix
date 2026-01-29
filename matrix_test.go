@@ -134,11 +134,23 @@ func TestNilPointers(t *testing.T) {
 		{Y: nil},
 		{Y: ptrTo(1)},
 	}
-	generated := slices.Collect(Generate(t, tcase{},
-		[]*int{nil, ptrTo(1)}))
+	generated := GenerateAndCollect(t, tcase{}, []*int{nil, ptrTo(1)})
 
-	if !reflect.DeepEqual(expected, generated) {
-		t.Logf("Expected: %v, got: %v", expected, generated)
-		t.Fail()
+	assert.Equal(t, expected, generated)
+}
+
+func TestGenerateAndCollect(t *testing.T) {
+	t.Parallel()
+
+	type tcase struct {
+		Y bool
 	}
+
+	expected := []tcase{
+		{Y: false},
+		{Y: true},
+	}
+	generated := GenerateAndCollect(t, tcase{}, []bool{false, true})
+
+	assert.Equal(t, expected, generated)
 }

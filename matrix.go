@@ -3,6 +3,7 @@ package matrix
 import (
 	"iter"
 	"reflect"
+	"slices"
 )
 
 type testingT interface {
@@ -10,7 +11,18 @@ type testingT interface {
 	Fatalf(format string, args ...any)
 }
 
+// GenerateAndCollect generates all possible combinations of values for fields of the type T.
+// It returns a collected slice of generated test cases.
+// Use this function if you need all test cases at once, use a for-range loop on Generate otherwise.
+// - len(dims) must equal len(fields(T))
+// - dimensions[i].(type) must equal [](fields(T)[i].(type))
+// - T must only have exported fields.
+func GenerateAndCollect[T any](t testingT, tcase T, dimensions ...any) []T {
+	return slices.Collect(Generate(t, tcase, dimensions...))
+}
+
 // Generate generates all possible combinations of values for fields of the type T.
+// It returns an iter.Seq[T] that can be for-ranged over.
 // - len(dims) must equal len(fields(T))
 // - dimensions[i].(type) must equal [](fields(T)[i].(type))
 // - T must only have exported fields.
